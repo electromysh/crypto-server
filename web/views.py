@@ -46,7 +46,7 @@ def encrypt():
         )
         new_path = add_encoded_extension(path)
         
-        return '{"path": ' + new_path + "}"
+        return '{"path": "' + new_path + '"}'
     elif algorythm == AES_ECB:
         write_file(
             path,
@@ -54,7 +54,7 @@ def encrypt():
         )
         new_path = add_encoded_extension(path)
         
-        return '{"path": ' + new_path + "}"
+        return '{"path": "' + new_path + '"}'
     elif algorythm == BLOWFISH_CBC:
         write_file(
             path,
@@ -62,9 +62,9 @@ def encrypt():
         )
         new_path = add_encoded_extension(path)
         
-        return '{"path": ' + new_path + "}"
+        return '{"path": "' + new_path + '"}'
     else:
-        return 'Wrong param "crypto_algo" ' + algorythm
+        return '{"error": "Wrong param \"crypto_algo\": ' + algorythm + '"}'
 
 @views.route('/decrypt', methods=['POST'])
 def decrypt():
@@ -82,18 +82,18 @@ def decrypt():
     elif codeToAlgorythm[algorythm_code] == BLOWFISH_CBC:
         decoded_data = decrypt_blowfish_CBC(data_to_decrypt)
     else:
-        return 'Can not decode'
+        return '{"error": "Can not decode"}'
         
     splitted_data = decoded_data.split(divider)
     
     if len(splitted_data) != 2:
-        return 'Can not decode'
+        return '{"error": "Can not decode"}'
     
     if splitted_data[1] == bytes(password, 'utf-8'):
         write_file(path, splitted_data[0])
         new_path = remove_encoded_extension(path)
         
-        return '{"path": ' + new_path + "}"
+        return '{"path": "' + new_path + '"}'
     else:
-        return 'Incorrect password'
+        return '{"error": "Incorrect password"}'
 
