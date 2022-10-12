@@ -1,39 +1,39 @@
-import os
+extension = '.encoded'
+outcoming_path = '/home/user/outcoming_data/'
 
-encoded_extension = '.encoded'
-
-def write_file(path, data):
-    file = open(path, 'r+b')
+def save(path, data):
+    name = path.split('/')[-1:][0]
+    new_path = outcoming_path + name
+    file = open(new_path, 'wb')
     file.write(data)
     file.close()
     
-def read_file(path):
+    return new_path
+    
+def read(path):
     file = open(path, 'r+b')
     data = file.read()
     file.close()
     
     return data
 
-def add_encoded_extension(path):
-    last_extension_index = path.rfind(encoded_extension)
+def apply_extension(path):
+    last_index = path.rfind(extension)
     
-    if last_extension_index != -1:
+    if last_index != -1:
         return path
     
-    new_path = path + encoded_extension
-    os.rename(path, new_path)
+    new_path = path + extension
     
     return new_path
     
-def remove_encoded_extension(path):
-    last_extension_index = path.rfind(encoded_extension)
+def remove_extension(path):
+    last_index = path.rfind(extension)
     
-    if last_extension_index == -1:
+    if last_index == -1:
         return path
     
-    extension_ends_at = last_extension_index + len(encoded_extension)
-    new_path = path[:last_extension_index] + path[extension_ends_at:]
-    
-    os.rename(path, new_path)
+    ends_at = last_index + len(extension)
+    new_path = path[:last_index] + path[ends_at:]
     
     return new_path
