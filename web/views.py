@@ -1,10 +1,9 @@
 from flask import Blueprint, request
 from enum import Enum
-from .files import read_file, write_file
+from .files import read_file, write_file, add_encoded_extension, remove_encoded_extension
 from .algorythms.AES_CBC import encrypt_AES_CBC, decrypt_AES_CBC
 from .algorythms.AES_ECB import decrypt_AES_ECB, encrypt_AES_ECB
 from .algorythms.BLOWFISH_CBC import decrypt_blowfish_CBC, encrypt_blowfish_CBC
-# from ceasar import 
 
 
 views = Blueprint('views', __name__)
@@ -34,7 +33,7 @@ divider = b"uhfofhcldzskvp;ajvd23928392edpjos"
 def encrypt():
     path = request.get_json(True)['path']
     password = request.get_json(True)['password']
-    algorythm = request.get_json(True)['algorythm']
+    algorythm = request.get_json(True)['crypto_algo']
     
     file_data = read_file(path)
     
@@ -45,21 +44,27 @@ def encrypt():
             path,
             encrypt_AES_CBC(data_to_edcode) + algorythmTOCode[AES_CBC]
         )
-        return '{"path": ' + path + "}"
+        new_path = add_encoded_extension(path)
+        
+        return '{"path": ' + new_path + "}"
     elif algorythm == AES_ECB:
         write_file(
             path,
             encrypt_AES_ECB(data_to_edcode) + algorythmTOCode[AES_ECB]
         )
-        return '{"path": ' + path + "}"
+        new_path = add_encoded_extension(path)
+        
+        return '{"path": ' + new_path + "}"
     elif algorythm == BLOWFISH_CBC:
         write_file(
             path,
             encrypt_blowfish_CBC(data_to_edcode) + algorythmTOCode[BLOWFISH_CBC]
         )
-        return '{"path": ' + path + "}"
+        new_path = add_encoded_extension(path)
+        
+        return '{"path": ' + new_path + "}"
     else:
-        return 'Wrong param "algorythm" ' + algorythm
+        return 'Wrong param "crypto_algo" ' + algorythm
 
 @views.route('/decrypt', methods=['POST'])
 def decrypt():
@@ -86,8 +91,9 @@ def decrypt():
     
     if splitted_data[1] == bytes(password, 'utf-8'):
         write_file(path, splitted_data[0])
+        new_path = remove_encoded_extension(path)
         
-        return '{"path": ' + path + "}"
+        return '{"path": ' + new_path + "}"
     else:
         return 'Incorrect password'
 

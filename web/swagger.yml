@@ -1,0 +1,77 @@
+openapi: 3.0.3
+info:
+  title: Web encryptor cryptografer
+  version: 1.0.0
+paths:
+  /encrypt:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                path:
+                  type: string
+                  default: "/home/user/incoming_data/data_0214168641"
+                algo:
+                  type: string
+                  default: "{lz4 | zstd | deflate}"
+                crypto_algo:
+                  type: string
+                  default: "{AES_CBC | AES_ECB | BLOWFISH_CBC}"
+                password:
+                  type: string
+                  default: "Qwerty123"
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  path:
+                    type: string
+                    default: "/home/user/outcoming_data/data_0214168641"
+        '400':
+          description: "client error"
+        '500':
+          description: "server error"
+  /decrypt:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                path:
+                  type: string
+                  default: "/home/user/incoming_data/data_0214168641"
+                algo:
+                  type: string
+                  default: "{lz4 | zstd | deflate}"
+                crypto_algo:
+                  type: string
+                  default: "{AES_CBC | AES_ECB | BLOWFISH_CBC}"
+                password:
+                  type: string
+                  default: "Qwerty123"
+                
+                
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                 path:
+                    type: string
+                    default: "/home/user/outcoming_data/data_0214168641"
+        '400':
+          description: "client error"
+        '500':
+          description: "server error"
